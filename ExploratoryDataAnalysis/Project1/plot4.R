@@ -1,4 +1,17 @@
 plot4 <- function() {
+      ## Read data file and format date
+      consumption <- read.table("household_power_consumption.txt", header = TRUE, sep = ";", na.strings = "?")
+      consumption$Date <- as.Date(consumption$Date, format = "%d/%m/%Y")
+      
+      ## Set up combined date and time
+      consumption$DateTime <- paste(consumption$Date, consumption$Time)
+      consumption$DateTime <- strptime(consumption$DateTime, format = "%Y-%m-%d %H:%M:%S")
+      
+      ## Subset needed dates
+      consumption <- consumption[consumption$Date == "2007-02-01" | consumption$Date == "2007-02-02", ]
+      
+      png(file = "plot4.png")
+      
       ## Sets up 2x2 grid for graphs
       par(mfrow = c(2,2))
       
@@ -17,4 +30,5 @@ plot4 <- function() {
       ## Bottom right graph
       with(consumption, plot(DateTime, Global_reactive_power, type = "l", xlab = "datetime"))
       
+      dev.off()
 }
